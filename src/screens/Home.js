@@ -29,7 +29,6 @@ class Home extends Component {
     this.props.fetchData(id).then(() => {
       this.setState({isLoading: false});
       const {error, data} = this.props.fetch;
-      console.log('data', data);
       if (error) {
         alert('Error');
       }

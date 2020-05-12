@@ -13,7 +13,6 @@ const initialState = {
 
 export const fetchData = id => {
   return dispatch => {
-    console.log('inside');
     return fetch(BASE_URL + id + '?api_key=' + API_KEY)
       .then(val => val.json())
       .then(data => {
@@ -33,20 +32,17 @@ export const fetchData = id => {
 // [Math.random() * (max - min) + min]
 
 export const onRandomPress = () => {
-  console.log('onRandomPress');
   return dispatch => {
     return fetch(
       'https://api.nasa.gov/neo/rest/v1/neo/browse?api_key=' + API_KEY,
     )
       .then(val => val.json())
       .then(data => {
-        console.log('data', data);
         let random =
           data.near_earth_objects[
             Math.floor(Math.random() * (data.near_earth_objects.length - 1) + 1)
           ];
 
-        console.log('id=======', random.id);
         if (random.id) {
           dispatch(fetchData(random.id));
         }
