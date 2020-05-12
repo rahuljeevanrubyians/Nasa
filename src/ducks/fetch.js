@@ -21,14 +21,42 @@ export const fetchData = id => {
           type: FETCH_SUCCESS,
           payload: data,
         });
-        console.log('data', data);
       })
       .catch(err => {
         dispatch({
           type: FETCH_FAILED,
           payload: err,
         });
-        console.log('err', err);
+      });
+  };
+};
+// [Math.random() * (max - min) + min]
+
+export const onRandomPress = () => {
+  console.log('onRandomPress');
+  return dispatch => {
+    return fetch(
+      'https://api.nasa.gov/neo/rest/v1/neo/browse?api_key=' + API_KEY,
+    )
+      .then(val => val.json())
+      .then(data => {
+        console.log('data', data);
+        let random =
+          data.near_earth_objects[
+            Math.floor(Math.random() * (data.near_earth_objects.length - 1) + 1)
+          ];
+
+        console.log('id=======', random.id);
+        if (random.id) {
+          dispatch(fetchData(random.id));
+        }
+        // console.log('randomId', data.near_earth_object);
+      })
+      .catch(err => {
+        // dispatch({
+        //   type: FETCH_FAILED,
+        //   payload: err,
+        // });
       });
   };
 };

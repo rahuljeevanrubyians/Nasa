@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {
+  Linking,
   //   KeyboardAvoidingView,
   SafeAreaView,
   Text,
@@ -92,6 +93,7 @@ class Details extends Component {
               Jet Propulsion Laboratory URL
             </Text>
             <Text
+              onPress={() => Linking.openURL(data.nasa_jpl_url)}
               style={{
                 fontSize: 20,
                 color: '#03A9F4',

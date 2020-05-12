@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import Loader from '../components/Loader';
-import {fetchData} from '../ducks/fetch';
+import {fetchData, onRandomPress} from '../ducks/fetch';
 
 class Home extends Component {
   constructor(props) {
@@ -24,11 +24,24 @@ class Home extends Component {
 
   //   3726710
   _fetchData = () => {
-    console.log('inside _fetchData ');
     const {id} = this.state;
     this.setState({isLoading: true});
     this.props.fetchData(id).then(() => {
-      console.log('test', this.props.fetch);
+      this.setState({isLoading: false});
+      const {error, data} = this.props.fetch;
+      console.log('data', data);
+      if (error) {
+        alert('Error');
+      }
+      if (data) {
+        this.props.navigation.navigate('DETAILS');
+      }
+    });
+  };
+
+  onRandomPress = () => {
+    this.setState({isLoading: true});
+    this.props.onRandomPress().then(() => {
       this.setState({isLoading: false});
       const {error, data} = this.props.fetch;
       if (error) {
@@ -87,6 +100,9 @@ class Home extends Component {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
+            onPress={() => {
+              this.onRandomPress();
+            }}
             style={{
               width: '80%',
               borderRadius: 15,
@@ -114,7 +130,6 @@ class Home extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log('state', state);
   return {
     fetch: state,
   };
@@ -123,6 +138,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     fetchData: id => dispatch(fetchData(id)),
+    onRandomPress: () => dispatch(onRandomPress()),
   };
 };
 
