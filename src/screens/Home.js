@@ -9,16 +9,39 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {connect} from 'react-redux';
+import Loader from '../components/Loader';
+import {fetchData} from '../ducks/fetch';
 
 class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
       id: '',
+      isLoading: false,
     };
   }
-  render() {
+
+  //   3726710
+  _fetchData = () => {
+    console.log('inside _fetchData ');
     const {id} = this.state;
+    this.setState({isLoading: true});
+    this.props.fetchData(id).then(() => {
+      console.log('test', this.props.fetch);
+      this.setState({isLoading: false});
+      const {error, data} = this.props.fetch;
+      if (error) {
+        alert('Error');
+      }
+      if (data) {
+        this.props.navigation.navigate('DETAILS');
+      }
+    });
+  };
+
+  render() {
+    const {id, isLoading} = this.state;
     return (
       <SafeAreaView style={styles.container}>
         <View
@@ -27,6 +50,7 @@ class Home extends Component {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
+          <Loader visible={isLoading} />
           {/* <KeyboardAvoidingView
             behavior={'padding'}
             style={{
@@ -44,6 +68,7 @@ class Home extends Component {
           <TouchableOpacity
             activeOpacity={0.5}
             disabled={id.length > 0 ? false : true}
+            onPress={() => this._fetchData()}
             style={{
               width: '80%',
               borderRadius: 15,
@@ -88,7 +113,20 @@ class Home extends Component {
   }
 }
 
-export default Home;
+const mapStateToProps = state => {
+  console.log('state', state);
+  return {
+    fetch: state,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchData: id => dispatch(fetchData(id)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
 
 const styles = StyleSheet.create({
   container: {
